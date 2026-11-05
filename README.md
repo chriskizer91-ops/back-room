@@ -9,9 +9,10 @@ It runs on V2's engine: the same renderer, the same walking, the same cabinets. 
 | Where | What |
 |---|---|
 | Front wall | **The door to the main floor.** Frosted glass with the floor's neon behind it, under a MAIN FLOOR sign. It's sealed for now (CONNECTING SOON), and LOOK explains that. |
-| Back wall, under BACK ROOM · GAMES IN PROGRESS | **Envoi + Moon Faire**: one cabinet, two games. Sitting down shows a choice between *Envoi on the Longest Night* and *Moon Faire*. Next to it is **What the Map Forgot**, a giant handheld on a pedestal, built after the game's own handheld. In the corner is a machine under a sheet (NEXT UP). |
+| Back wall, under BACK ROOM · GAMES IN PROGRESS | **What the Map Forgot**, a giant handheld on a pedestal, built after the game's own handheld. On the left, a doorway leads through to the Workshop. |
 | Left wall, the GALLERY | Three framed pictures from Envoi. |
 | Right wall | Two from What the Map Forgot. The Jester from Moon Faire hangs on the X Room's wall. |
+| Through the doorway: **the Workshop**, under THE WORKSHOP · UNFINISHED GAMES | Unfinished games, each on a cabinet built to look like its game. **Envoi on the Longest Night** is a moonlit gothic shrine: a pointed arch with gilt trim, a stained-glass rose window, a crescent moon, candles on the steps, motes of magic drifting round it, and the key art on its front. **Moon Faire** is a booth at a night faire: a striped tent with a valance of chasing bulbs, a velvet curtain, a gilt playbill screen, a full moon on the peak, and the performers on cut-out boards either side. In the corner is the next one, a cabinet still being built (NEXT UP), with a work light, sawhorses and paint. A workbench sits under a pegboard of tools. |
 | Back right corner | **The X Room**, a closet through its own door. It holds five lit panels: What this is, Collaboration + augmentation, The part that's mine, The future of media, and Open by design. |
 
 Every picture and panel works like a machine. Walk up and press VIEW or READ (E or Enter). The picture or the words open full size, and ← Arcade (or Esc) brings you back.
@@ -26,7 +27,8 @@ To update a game, replace its file in `games/`.
 
 - **The words on the panels** are at the bottom of `src/arcade/src/m4_backroom.js`, one `Panel({...})` each. They were drafted from Christopher's own words and are his to rewrite.
 - **A picture**: put the image in `art/` and add an `ArtFrame({...})` line in the same file, with its width and height in metres.
-- **The two-game cabinet** is the `Upright({... choices:[...]})` at the top of that file. A third game is a third entry in `choices`.
+- **A cabinet with more than one game**: a machine's `game` can be `{title, choices:[{title, sub, src}, ...]}`. Sitting down then shows a choice between them.
+- **A themed cabinet** for another unfinished game: the Workshop's builders are in `src/arcade/src/m7_workshop.js`, one function per cabinet. Copy the nearest one and change it.
 
 Then build:
 
@@ -42,10 +44,11 @@ That writes `index.html` from V2's `shell.html` (copied into `src/arcade/` uncha
 | `m1_host.js` | V2's game host, plus reading cards (panels, pictures, the door) and the chooser for a cabinet with more than one game |
 | `m2_cabinets.js`, `m3_tables.js` | V2's cabinets and tables, unchanged |
 | `m6_parts.js` | the back room's own machines: the giant handheld, the panels, the frames, the sealed door |
+| `m7_workshop.js` | the Workshop's cabinets: Envoi's shrine, Moon Faire's booth, the half-built NEXT UP, the workbench |
 | `m4_backroom.js` | the floor plan |
 
 `build.py` also makes a few small changes to the shell, and checks that each one matches exactly once:
-- the room's size
+- the room's size (the back room, the X Room and the Workshop)
 - where you start
 - no intro
 - the camera stays on your side of the X Room's walls

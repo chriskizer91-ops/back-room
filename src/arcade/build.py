@@ -22,13 +22,13 @@ def put(old,new):
     assert s.count(old)==1,('expected once',old[:70],s.count(old))
     s=s.replace(old,new)
 put('/*@@ROOM@@*/',rd('m0_backroom.js'))
-put('/*@@MACHINES@@*/','\n'.join(rd(n) for n in ['m1_host.js','m2_cabinets.js','m3_tables.js','m6_parts.js','m4_backroom.js']))
+put('/*@@MACHINES@@*/','\n'.join(rd(n) for n in ['m1_host.js','m2_cabinets.js','m3_tables.js','m6_parts.js','m7_workshop.js','m4_backroom.js']))
 put("/*@@INTRO@@*/'original'","'original'")
 put("/*@@ROOT@@*/'../'","''")
 put("/*@@DEMO@@*/false",'false')
 put('/*@@INTROS@@*/','')
 # the room is smaller than the main floor
-put('const ROOM={x0:-16,x1:16,z0:-12,z1:12,h:4.6};','const ROOM={x0:-9,x1:9,z0:-8,z1:8,h:4.0};')
+put('const ROOM={x0:-16,x1:16,z0:-12,z1:12,h:4.6};','const ROOM={x0:-9,x1:9,z0:-16,z1:8,h:4.0};')
 # you start just inside the door from the main floor, facing into the room
 put('CH_.x=2.4;CH_.z=5.2;','CH_.x=0;CH_.z=5.5;')
 # the walking camera doesn't look through the X Room's walls

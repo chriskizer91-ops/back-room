@@ -4,6 +4,7 @@
    You come in by the sealed door from the main floor (front wall). The back wall holds the games in progress;
    the left and right walls are a gallery. In the back right corner is the X Room, a closet of panels about
    what this place is, through a door in its own wall. */
+const ZB=-8,WD={x0:-7.7,x1:-5.9};                // the back room's back wall (the Workshop is behind it) and the doorway in it
 const CL={x:4.2,z:-1.6,dz0:-4.9,dz1:-3.5,t:.16};   // the closet: its west wall at x, its north wall at z, the door's gap in the west wall
 const WALLS=[];                                   // interior walls the camera mustn't look through: [x0,x1,z0,z1]
 function wallBlock(x0,x1,z0,z1){WALLS.push([Math.min(x0,x1),Math.max(x0,x1),Math.min(z0,z1),Math.max(z0,z1)]);block(x0,x1,z0,z1);}
@@ -52,16 +53,30 @@ function buildRoom(){
     {o:[x0,z1],d:[0,-1],n:[1,0],L:z1-z0,cove:'c'},{o:[x1,z0],d:[0,1],n:[-1,0],L:z1-z0,cove:'c'}];
   for(const R of RUNS)dress(R);
 
+  /* ---- the back room's back wall, with a doorway through to the Workshop ---- */
+  {const ht=.08,hd=2.45,{x0:g0,x1:g1}=WD;
+    W.fin(.2,0);W.box((x0+g0)/2,h/2,ZB,g0-x0,h,.16,wall);W.box((g1+x1)/2,h/2,ZB,x1-g1,h,.16,wall);W.box((g0+g1)/2,(hd+h)/2,ZB,g1-g0,h-hd,.16,wall);
+    wallBlock(x0,g0,ZB-ht,ZB+ht);wallBlock(g1,x1,ZB-ht,ZB+ht);
+    dress({o:[x0,ZB+ht],d:[1,0],n:[0,1],L:x1-x0,cove:'v',skip:[[g0-x0,g1-x0]]});          // the back room's side
+    dress({o:[x1,ZB-ht],d:[-1,0],n:[0,-1],L:x1-x0,cove:'p',skip:[[x1-g1,x1-g0]]});         // the Workshop's side
+    for(const sz of [-1,1]){const fz=ZB+sz*(ht+.02);W.fin(.9,1);
+      for(const [a,b] of [[[g0,0,fz],[g0,hd,fz]],[[g1,0,fz],[g1,hd,fz]],[[g0,hd,fz],[g1,hd,fz]]])W.tube(a,b,.03,chrome,0,6);
+      W.fin(0,0);const c=sz>0?hex('#ffd23f'):hex('#2fe6ff'),fz2=fz+sz*.03;
+      for(const [a,b] of [[[g0-.06,0,fz2],[g0-.06,hd+.06,fz2]],[[g1+.06,0,fz2],[g1+.06,hd+.06,fz2]],[[g0-.06,hd+.06,fz2],[g1+.06,hd+.06,fz2]]])W.tube(a,b,.01,c,3);}
+    neon2(W,'WORKSHOP',[(g0+g1)/2,2.62,ZB+ht+.05],[1,0,0],.034,hex('#ffd23f'),4.2);
+    neon2(W,'BACK ROOM',[(g0+g1)/2,2.62,ZB-ht-.05],[-1,0,0],.03,hex('#2fe6ff'),4.2);
+    lightAt((g0+g1)/2,2.3,ZB+1,3.5,[1,.8,.4],.6);lightAt((g0+g1)/2,2.3,ZB-1,3.5,[.4,.8,1],.5);
+  }
   /* ---- the X Room's walls: one down from the back wall with a door in it, one across to the right wall ---- */
   {const {x:cx,z:cz,dz0,dz1,t}=CL,ht=t/2,hd=2.45;
     W.fin(.2,0);
-    W.box(cx,h/2,(z0+dz0)/2,t,h,dz0-z0,wall);W.box(cx,h/2,(dz1+cz+ht)/2,t,h,cz+ht-dz1,wall);
+    W.box(cx,h/2,(ZB+dz0)/2,t,h,dz0-ZB,wall);W.box(cx,h/2,(dz1+cz+ht)/2,t,h,cz+ht-dz1,wall);
     W.box(cx,(hd+h)/2,(dz0+dz1)/2,t,h-hd,dz1-dz0,wall);
     W.box((cx+x1)/2,h/2,cz,x1-cx,h,t,wall);
-    wallBlock(cx-ht,cx+ht,z0,dz0);wallBlock(cx-ht,cx+ht,dz1,cz+ht);wallBlock(cx,x1,cz-ht,cz+ht);
-    const gap=[[dz0-z0,dz1-z0]];
-    dress({o:[cx-ht,z0],d:[0,1],n:[-1,0],L:cz+ht-z0,cove:'c',skip:gap});      // the back-room side
-    dress({o:[cx+ht,z0],d:[0,1],n:[1,0],L:cz-ht-z0,cove:'c',skip:gap});       // the closet side
+    wallBlock(cx-ht,cx+ht,ZB,dz0);wallBlock(cx-ht,cx+ht,dz1,cz+ht);wallBlock(cx,x1,cz-ht,cz+ht);
+    const gap=[[dz0-ZB,dz1-ZB]];
+    dress({o:[cx-ht,ZB],d:[0,1],n:[-1,0],L:cz+ht-ZB,cove:'c',skip:gap});      // the back-room side
+    dress({o:[cx+ht,ZB],d:[0,1],n:[1,0],L:cz-ht-ZB,cove:'c',skip:gap});       // the closet side
     dress({o:[x1,cz+ht],d:[-1,0],n:[0,1],L:x1-cx-ht,cove:'c'});               // the back-room side of the cross wall
     dress({o:[cx+ht,cz-ht],d:[1,0],n:[0,-1],L:x1-cx-ht,cove:'c'});            // the closet side
     /* the door frame: chrome, an LED line round it, and the room's name over it */
@@ -71,7 +86,7 @@ function buildRoom(){
     neon2(W,'X ROOM',[cx-ht-.05,2.62,(dz0+dz1)/2],[0,0,1],.045,hex('#2fe6ff'),4.2);
     lightAt(cx-1,2.4,(dz0+dz1)/2,3.5,[.35,.85,1],.6);
     /* inside: one bare bulb on a cord, a stack of boxes in the corner, a step-stool */
-    const bx=(cx+x1)/2+.2,bz=(z0+cz)/2;
+    const bx=(cx+x1)/2+.2,bz=(ZB+cz)/2;
     W.fin(0,0);W.tube([bx,h,bz],[bx,h-.85,bz],.006,hex('#222'));W.fin(.6,1);W.cyl(bx,h-.92,bz,.035,.08,10,hex('#3a3428'));W.fin(0,0);W.sphere(bx,h-.98,bz,.06,hex('#ffe2a8'),4,1);
     {const L=lightAt(bx,h-1.1,bz,6.5,[1,.82,.6],1.05);L.hz=.35;}
     const box3=(x,y,z,w,hh,d,c)=>{W.fin(.1,0);W.box(x,y+hh/2,z,w,hh,d,hex(c));W.box(x,y+hh-.005,z,w*.12,.012,d+.004,hex('#c8b48a'));};
@@ -127,40 +142,54 @@ function buildRoom(){
   const SW=[1,.86,.7],PK=[1,.3,.75],CY=[.35,.85,1],AM=[1,.62,.25],VI=[.65,.4,1];
   spot([-4.2,TY-.2,-4.3],[-1.2,3.0,-7.9],PK,6,1.0,{light:false});
   spot([-.6,TY-.2,-4.3],[-3.6,3.0,-7.9],CY,6,1.0,{light:false});
-  spot([-6.4,TY-.2,-4.3],[-5,1.2,-7.4],VI,12,.85,{range:4,pool:.4});
-  spot([1.8,TY-.2,-4.3],[.2,1.2,-7.3],AM,12,.85,{range:4,pool:.4});
+  spot([-6.4,TY-.2,-4.3],[-6.8,1.6,-7.9],VI,12,.7,{range:3.5,pool:.35});
+  spot([-.4,TY-.2,-4.3],[-2.4,1.2,-7.3],AM,12,.85,{range:4,pool:.4});
   spot([0,TY-.2,2.6],[0,1.4,7.8],SW,13,.7,{pool:.4,range:4});
 
   /* ---- the back wall's sign: BACK ROOM over GAMES IN PROGRESS ---- */
-  {const sx=-2.4;
-    W.fin(.7,0);W.box(sx,2.92,z0+.07,5.2,1.6,.1,hex('#0b0812'));
-    W.fin(.9,1);for(const [a,b] of [[[sx-2.6,2.12,z0+.13],[sx+2.6,2.12,z0+.13]],[[sx-2.6,3.72,z0+.13],[sx+2.6,3.72,z0+.13]],[[sx-2.6,2.12,z0+.13],[sx-2.6,3.72,z0+.13]],[[sx+2.6,2.12,z0+.13],[sx+2.6,3.72,z0+.13]]])W.tube(a,b,.028,chrome,0,6);
+  {const sx=-2.4,zs=ZB+.08;
+    W.fin(.7,0);W.box(sx,2.92,zs+.07,5.2,1.6,.1,hex('#0b0812'));
+    W.fin(.9,1);for(const [a,b] of [[[sx-2.6,2.12,zs+.13],[sx+2.6,2.12,zs+.13]],[[sx-2.6,3.72,zs+.13],[sx+2.6,3.72,zs+.13]],[[sx-2.6,2.12,zs+.13],[sx-2.6,3.72,zs+.13]],[[sx+2.6,2.12,zs+.13],[sx+2.6,3.72,zs+.13]]])W.tube(a,b,.028,chrome,0,6);
     W.fin(0,0);
     {const c=mkCanvas(256,80),g=c.getContext('2d'),gr=g.createRadialGradient(128,40,4,128,40,130);gr.addColorStop(0,'rgba(70,20,130,1)');gr.addColorStop(.6,'rgba(26,6,52,1)');gr.addColorStop(1,'rgba(8,4,14,1)');
       g.fillStyle=gr;g.fillRect(0,0,256,80);for(let y=2;y<80;y+=4)for(let x=2;x<256;x+=4){g.fillStyle='rgba(120,220,255,'+(.05+.05*Math.sin(x*.07+y*.11))+')';g.fillRect(x,y,1.4,1.4);}
-      const m=new MB();m.quad([sx-2.52,2.2,z0+.125],[sx+2.52,2.2,z0+.125],[sx+2.52,3.64,z0+.125],[sx-2.52,3.64,z0+.125],[1,1,1],0,QUV);TEXMESH.push({mesh:mesh(m),tex:texFrom(c,false),mode:3,emi:.42});}
-    neon2(W,'BACK ROOM',[sx,3.0,z0+.17],[1,0,0],.072,hex('#2fe6ff'),4.5);
-    neon2(W,'GAMES IN PROGRESS',[sx,2.42,z0+.17],[1,0,0],.034,hex('#ff2f9a'),4.2);
-    lightAt(sx,2.9,z0+1.1,6,[.4,.6,1],1.0);
+      const m=new MB();m.quad([sx-2.52,2.2,zs+.125],[sx+2.52,2.2,zs+.125],[sx+2.52,3.64,zs+.125],[sx-2.52,3.64,zs+.125],[1,1,1],0,QUV);TEXMESH.push({mesh:mesh(m),tex:texFrom(c,false),mode:3,emi:.42});}
+    neon2(W,'BACK ROOM',[sx,3.0,zs+.17],[1,0,0],.072,hex('#2fe6ff'),4.5);
+    neon2(W,'GAMES IN PROGRESS',[sx,2.42,zs+.17],[1,0,0],.034,hex('#ff2f9a'),4.2);
+    lightAt(sx,2.9,zs+1.1,6,[.4,.6,1],1.0);
     /* chasing bulbs round the sign */
     const sets=[new MB(),new MB(),new MB()],pts=[];
     for(let x=sx-2.48;x<=sx+2.49;x+=.16)pts.push([x,3.62]);for(let y=3.48;y>=2.3;y-=.16)pts.push([sx+2.48,y]);
     for(let x=sx+2.48;x>=sx-2.49;x-=.16)pts.push([x,2.22]);for(let y=2.36;y<=3.49;y+=.16)pts.push([sx-2.48,y]);
-    pts.forEach((p,i)=>sets[i%3].sphere(p[0],p[1],z0+.15,.024,hex('#ffd890'),3.2,0));
+    pts.forEach((p,i)=>sets[i%3].sphere(p[0],p[1],zs+.15,.024,hex('#ffd890'),3.2,0));
     const SM=sets.map(mesh);
     DECO.push({t:0,update(dt){this.t+=dt;},draw(){const k=Math.floor(this.t*7)%3;SM.forEach((m,i)=>drawLit(m,m4(),{emi:i===k?1.5:.12}));}});
   }
+  /* ---- THE WORKSHOP, behind the back room: unfinished games ---- */
+  truss(-8.4,-12.2,8.4,-12.2,TY,.32);
+  for(const [gx,gz] of [[-5.5,-10],[5.5,-10]]){W.fin(.2,0);W.box(gx,h-.03,gz,1.4,.04,.5,hex('#fff0dc'),1.0);W.box(gx,h-.06,gz,1.52,.03,.62,blk);
+    const L=lightAt(gx,h-.45,gz,7,[1,.85,.7],.6);L.hz=.12;}
+  for(let tx=-7.5;tx<7.6;tx+=2.5){W.fin(.3,1);W.box(tx,h-.1,-9.2,1.25,.05,.09,steel);W.fin(0,0);W.tube([tx-.58,h-.14,-9.2],[tx+.58,h-.14,-9.2],.016,uvC,3.4);}
+  UVT.push([-8.6,-9.2,8.6,-9.2,.95,2.4]);
+  {W.fin(.7,0);W.box(0,3.12,z0+.07,6.4,1.36,.1,hex('#0b0812'));
+    W.fin(.9,1);for(const [a,b] of [[[-3.2,2.44,z0+.13],[3.2,2.44,z0+.13]],[[-3.2,3.8,z0+.13],[3.2,3.8,z0+.13]],[[-3.2,2.44,z0+.13],[-3.2,3.8,z0+.13]],[[3.2,2.44,z0+.13],[3.2,3.8,z0+.13]]])W.tube(a,b,.028,chrome,0,6);
+    W.fin(0,0);neon2(W,'THE WORKSHOP',[0,3.12,z0+.17],[1,0,0],.064,hex('#ffd23f'),4.5);neon2(W,'UNFINISHED GAMES',[0,2.64,z0+.17],[1,0,0],.03,hex('#ff2f9a'),4.2);
+    lightAt(0,3.0,z0+1.1,6,[1,.75,.4],.9);}
+  spot([-1.6,TY-.2,-12.2],[-3.4,1.4,-15.2],[.65,.45,1],13,.9,{range:4.5,pool:.45});
+  spot([1.6,TY-.2,-12.2],[3.4,1.4,-14.9],[1,.7,.35],14,.9,{range:4.5,pool:.45});
+  spot([0,TY-.2,-12.2],[0,3.0,-15.9],[1,.8,.45],7,1.0,{light:false});
+
   /* the gallery's name on the left wall */
   W.fin(.6,0);W.box(x0+.03,3.16,.4,.06,.42,3.3,hex('#0a0810'));W.fin(0,0);
   neon2(W,'GALLERY',[x0+.08,3.0,.4],[0,0,-1],.05,hex('#ffd23f'),4);lightAt(x0+1.3,2.8,.4,6,[1,.85,.4],.7);
 
   /* ---- a polished mat at the door, a polished floor in front of the games ---- */
   GLOSS.disc=[0,6.55,1.05,3];
-  GLOSS.rects.push([-6.6,-8,1.8,-6.1,1]);
+  GLOSS.rects.push([-4.4,ZB+.08,-.4,-6.2,1],[-7,-16,7,-13.1,1]);
   {const [cx,cz,r]=GLOSS.disc,pts=[];for(let i=0;i<64;i++){const a=i/64*TAU;pts.push([cx+Math.cos(a)*(r+.02),.012,cz+Math.sin(a)*(r+.02)]);}
     W.fin(.9,1);polyTube(W,pts,.02,chrome,0,true);W.fin(0,0);
     const p2=pts.map(p=>[cx+(p[0]-cx)*.985,.016,cz+(p[2]-cz)*.985]);polyTube(W,p2,.008,trimC,3.2,true);}
-  {const [a0,b0,a1,b1]=[-6.6,-8,1.8,-6.1];W.fin(.9,1);
+  {const [a0,b0,a1,b1]=[-4.4,ZB+.08,-.4,-6.2];W.fin(.9,1);
     for(const [a,b] of [[[a0,.006,b1],[a1,.006,b1]],[[a0,.006,b0],[a0,.006,b1]],[[a1,.006,b0],[a1,.006,b1]]])W.tube(a,b,.012,chrome,0,6);W.fin(0,0);}
 
   /* ---- a bench facing the gallery ---- */

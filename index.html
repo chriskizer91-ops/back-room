@@ -624,7 +624,7 @@ class Screen{
 
 /* ================= world state ================= */
 const W_={mode:'pin',hintT:0,t:0,tickets:parseInt(store.get('arcade2-tickets','0'),10)||0,near:null,active:null,trans:0,transDir:0,camFrom:null,camTo:null};
-const ROOM={x0:-9,x1:9,z0:-16,z1:8,h:4.0};
+const ROOM={x0:-9,x1:9,z0:-26,z1:8,h:4.0};
 const OBST=[];          // axis-aligned blockers {x0,x1,z0,z1}
 const ATTR=[];          // attractions
 const LIGHTS=[];        // static lights [x,y,z,range,r,g,b,intensity]
@@ -829,18 +829,19 @@ function buildRoom(){
     DECO.push({t:0,update(dt){this.t+=dt;},draw(){const k=Math.floor(this.t*7)%3;SM.forEach((m,i)=>drawLit(m,m4(),{emi:i===k?1.5:.12}));}});
   }
   /* ---- THE WORKSHOP, behind the back room: unfinished games ---- */
-  truss(-8.4,-12.2,8.4,-12.2,TY,.32);
-  for(const [gx,gz] of [[-5.5,-10],[5.5,-10]]){W.fin(.2,0);W.box(gx,h-.03,gz,1.4,.04,.5,hex('#fff0dc'),1.0);W.box(gx,h-.06,gz,1.52,.03,.62,blk);
+  truss(-8.4,-12.2,8.4,-12.2,TY,.32);truss(-8.4,-18.4,8.4,-18.4,TY,.32);truss(-8.4,-22.6,8.4,-22.6,TY,.32);
+  for(const [gx,gz] of [[-5.5,-10],[5.5,-10],[-5.5,-15.6],[5.5,-15.6],[0,-20.6]]){W.fin(.2,0);W.box(gx,h-.03,gz,1.4,.04,.5,hex('#fff0dc'),1.0);W.box(gx,h-.06,gz,1.52,.03,.62,blk);
     const L=lightAt(gx,h-.45,gz,7,[1,.85,.7],.6);L.hz=.12;}
   for(let tx=-7.5;tx<7.6;tx+=2.5){W.fin(.3,1);W.box(tx,h-.1,-9.2,1.25,.05,.09,steel);W.fin(0,0);W.tube([tx-.58,h-.14,-9.2],[tx+.58,h-.14,-9.2],.016,uvC,3.4);}
   UVT.push([-8.6,-9.2,8.6,-9.2,.95,2.4]);
+  for(const tz of [-14.2,-19.6]){for(let tx=-7.5;tx<7.6;tx+=2.5){W.fin(.3,1);W.box(tx,h-.1,tz,1.25,.05,.09,steel);W.fin(0,0);W.tube([tx-.58,h-.14,tz],[tx+.58,h-.14,tz],.016,uvC,3.4);}UVT.push([-8.6,tz,8.6,tz,.95,2.4]);}
   {W.fin(.7,0);W.box(0,3.12,z0+.07,6.4,1.36,.1,hex('#0b0812'));
     W.fin(.9,1);for(const [a,b] of [[[-3.2,2.44,z0+.13],[3.2,2.44,z0+.13]],[[-3.2,3.8,z0+.13],[3.2,3.8,z0+.13]],[[-3.2,2.44,z0+.13],[-3.2,3.8,z0+.13]],[[3.2,2.44,z0+.13],[3.2,3.8,z0+.13]]])W.tube(a,b,.028,chrome,0,6);
     W.fin(0,0);neon2(W,'THE WORKSHOP',[0,3.12,z0+.17],[1,0,0],.064,hex('#ffd23f'),4.5);neon2(W,'UNFINISHED GAMES',[0,2.64,z0+.17],[1,0,0],.03,hex('#ff2f9a'),4.2);
     lightAt(0,3.0,z0+1.1,6,[1,.75,.4],.9);}
-  spot([-1.6,TY-.2,-12.2],[-3.4,1.4,-15.2],[.65,.45,1],13,.9,{range:4.5,pool:.45});
-  spot([1.6,TY-.2,-12.2],[3.4,1.4,-14.9],[1,.7,.35],14,.9,{range:4.5,pool:.45});
-  spot([0,TY-.2,-12.2],[0,3.0,-15.9],[1,.8,.45],7,1.0,{light:false});
+  spot([-1.6,TY-.2,-22.6],[-3.4,1.4,-25.2],[.65,.45,1],13,.9,{range:4.5,pool:.45});
+  spot([1.6,TY-.2,-22.6],[3.4,1.4,-24.85],[1,.7,.35],14,.9,{range:4.5,pool:.45});
+  spot([0,TY-.2,-22.6],[0,3.0,-25.9],[1,.8,.45],7,1.0,{light:false});
   spot([6.0,TY-.2,-12.2],[7.9,1.5,-11.6],[1,.78,.5],17,1.0,{range:4.8,pool:.5});lightAt(8.5,2.7,-13.6,3.4,[.4,.62,1],.7);lightAt(8.5,2.7,-9.6,3.4,[.4,.62,1],.6);
 
   /* the gallery's name on the left wall */
@@ -849,7 +850,7 @@ function buildRoom(){
 
   /* ---- a polished mat at the door, a polished floor in front of the games ---- */
   GLOSS.disc=[0,6.55,1.05,3];
-  GLOSS.rects.push([-4.4,ZB+.08,-.4,-6.2,1],[-7,-16,7,-13.1,1]);
+  GLOSS.rects.push([-4.4,ZB+.08,-.4,-6.2,1],[-7,-26,7,-23.1,1]);
   {const [cx,cz,r]=GLOSS.disc,pts=[];for(let i=0;i<64;i++){const a=i/64*TAU;pts.push([cx+Math.cos(a)*(r+.02),.012,cz+Math.sin(a)*(r+.02)]);}
     W.fin(.9,1);polyTube(W,pts,.02,chrome,0,true);W.fin(0,0);
     const p2=pts.map(p=>[cx+(p[0]-cx)*.985,.016,cz+(p[2]-cz)*.985]);polyTube(W,p2,.008,trimC,3.2,true);}
@@ -3150,9 +3151,9 @@ Handheld({name:'What the Map Forgot',sub:'Handheld adventure · finished',x:-2.4
   game:G_('mapforgot','WHAT THE MAP FORGOT',{bridge:false,deluxe:true})});
 
 /* THE WORKSHOP: unfinished games, each on a cabinet built to look like its game */
-EnvoiShrine({name:'Envoi on the Longest Night',sub:'A story in chapters · in progress',x:-3.4,z:-15.2,ry:0,res:[320,180],
+EnvoiShrine({name:'Envoi on the Longest Night',sub:'A story in chapters · in progress',x:-3.4,z:-25.2,ry:0,res:[320,180],
   game:G_('envoi','ENVOI ON THE LONGEST NIGHT',{bridge:false,deluxe:true})});
-FaireBooth({name:'Moon Faire',sub:'The performers · in progress',x:3.4,z:-14.85,ry:0,res:[320,180],
+FaireBooth({name:'Moon Faire',sub:'The performers · in progress',x:3.4,z:-24.85,ry:0,res:[320,180],
   game:G_('moonfaire','MOON FAIRE',{bridge:false,deluxe:true})});
 /* Ironhowl: the Howler, kneeling with its hatch open. It plays the arcade's own Ironhowl, both versions, from the arcade's site */
 const ARC='../HYPERDOT-ARCADE/';
@@ -3160,7 +3161,10 @@ MechCockpit({name:'Ironhowl',sub:'Climb into the Howler · 3D or Retro 2D',x:8.0
   game:{id:'ironhowl',title:'Ironhowl',deluxe:true,choices:[
     {title:'Ironhowl 3D',sub:'The mech arena in real 3D · in progress',src:ARC+'v2/games/ironhowl3d.html',deluxe:true},
     {title:'Ironhowl',sub:'Retro 2D · the original, on the LED matrix',src:ARC+'games/ironhowl.html'}]}});
-HalfBuilt({x:ROOM.x0+.75,z:-14.9,ry:RX});
+HalfBuilt({x:ROOM.x0+.75,z:-24.9,ry:RX});
+/* room for what's next: two machines under their sheets down the right wall */
+Covered({name:'Coming soon',x:ROOM.x1-.7,z:-16.8,ry:-RX,seed:4.2});Covered({name:'Coming soon',x:ROOM.x1-.7,z:-20.4,ry:-RX,seed:5.7});
+{neon2(WORLD,'COMING SOON',[ROOM.x1-.1,2.55,-18.6],[0,0,1],.03,hex('#b47aff'),3.8);lightAt(ROOM.x1-1.3,2.3,-18.6,4,[.6,.4,1],.6);}
 /* Redline County: the front half of the stock SUV, on a patch of the game's dirt. Climb in; the windshield is the screen */
 RedlineSUV({name:'Redline County',sub:'Climb into the SUV · pick a game',x:0,z:-11.4,ry:1.97,res:[320,180],
   game:{id:'redlinecounty',title:'Redline County',choices:[

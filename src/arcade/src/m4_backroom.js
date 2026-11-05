@@ -7,9 +7,9 @@ Handheld({name:'What the Map Forgot',sub:'Handheld adventure · finished',x:-2.4
   game:G_('mapforgot','WHAT THE MAP FORGOT',{bridge:false,deluxe:true})});
 
 /* THE WORKSHOP: unfinished games, each on a cabinet built to look like its game */
-EnvoiShrine({name:'Envoi on the Longest Night',sub:'A story in chapters · in progress',x:-3.4,z:-15.2,ry:0,res:[320,180],
+EnvoiShrine({name:'Envoi on the Longest Night',sub:'A story in chapters · in progress',x:-3.4,z:-25.2,ry:0,res:[320,180],
   game:G_('envoi','ENVOI ON THE LONGEST NIGHT',{bridge:false,deluxe:true})});
-FaireBooth({name:'Moon Faire',sub:'The performers · in progress',x:3.4,z:-14.85,ry:0,res:[320,180],
+FaireBooth({name:'Moon Faire',sub:'The performers · in progress',x:3.4,z:-24.85,ry:0,res:[320,180],
   game:G_('moonfaire','MOON FAIRE',{bridge:false,deluxe:true})});
 /* Ironhowl: the Howler, kneeling with its hatch open. It plays the arcade's own Ironhowl, both versions, from the arcade's site */
 const ARC='../HYPERDOT-ARCADE/';
@@ -17,7 +17,10 @@ MechCockpit({name:'Ironhowl',sub:'Climb into the Howler · 3D or Retro 2D',x:8.0
   game:{id:'ironhowl',title:'Ironhowl',deluxe:true,choices:[
     {title:'Ironhowl 3D',sub:'The mech arena in real 3D · in progress',src:ARC+'v2/games/ironhowl3d.html',deluxe:true},
     {title:'Ironhowl',sub:'Retro 2D · the original, on the LED matrix',src:ARC+'games/ironhowl.html'}]}});
-HalfBuilt({x:ROOM.x0+.75,z:-14.9,ry:RX});
+HalfBuilt({x:ROOM.x0+.75,z:-24.9,ry:RX});
+/* room for what's next: two machines under their sheets down the right wall */
+Covered({name:'Coming soon',x:ROOM.x1-.7,z:-16.8,ry:-RX,seed:4.2});Covered({name:'Coming soon',x:ROOM.x1-.7,z:-20.4,ry:-RX,seed:5.7});
+{neon2(WORLD,'COMING SOON',[ROOM.x1-.1,2.55,-18.6],[0,0,1],.03,hex('#b47aff'),3.8);lightAt(ROOM.x1-1.3,2.3,-18.6,4,[.6,.4,1],.6);}
 /* Redline County: the front half of the stock SUV, on a patch of the game's dirt. Climb in; the windshield is the screen */
 RedlineSUV({name:'Redline County',sub:'Climb into the SUV · pick a game',x:0,z:-11.4,ry:1.97,res:[320,180],
   game:{id:'redlinecounty',title:'Redline County',choices:[

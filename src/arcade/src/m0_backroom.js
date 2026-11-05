@@ -166,18 +166,19 @@ function buildRoom(){
     DECO.push({t:0,update(dt){this.t+=dt;},draw(){const k=Math.floor(this.t*7)%3;SM.forEach((m,i)=>drawLit(m,m4(),{emi:i===k?1.5:.12}));}});
   }
   /* ---- THE WORKSHOP, behind the back room: unfinished games ---- */
-  truss(-8.4,-12.2,8.4,-12.2,TY,.32);
-  for(const [gx,gz] of [[-5.5,-10],[5.5,-10]]){W.fin(.2,0);W.box(gx,h-.03,gz,1.4,.04,.5,hex('#fff0dc'),1.0);W.box(gx,h-.06,gz,1.52,.03,.62,blk);
+  truss(-8.4,-12.2,8.4,-12.2,TY,.32);truss(-8.4,-18.4,8.4,-18.4,TY,.32);truss(-8.4,-22.6,8.4,-22.6,TY,.32);
+  for(const [gx,gz] of [[-5.5,-10],[5.5,-10],[-5.5,-15.6],[5.5,-15.6],[0,-20.6]]){W.fin(.2,0);W.box(gx,h-.03,gz,1.4,.04,.5,hex('#fff0dc'),1.0);W.box(gx,h-.06,gz,1.52,.03,.62,blk);
     const L=lightAt(gx,h-.45,gz,7,[1,.85,.7],.6);L.hz=.12;}
   for(let tx=-7.5;tx<7.6;tx+=2.5){W.fin(.3,1);W.box(tx,h-.1,-9.2,1.25,.05,.09,steel);W.fin(0,0);W.tube([tx-.58,h-.14,-9.2],[tx+.58,h-.14,-9.2],.016,uvC,3.4);}
   UVT.push([-8.6,-9.2,8.6,-9.2,.95,2.4]);
+  for(const tz of [-14.2,-19.6]){for(let tx=-7.5;tx<7.6;tx+=2.5){W.fin(.3,1);W.box(tx,h-.1,tz,1.25,.05,.09,steel);W.fin(0,0);W.tube([tx-.58,h-.14,tz],[tx+.58,h-.14,tz],.016,uvC,3.4);}UVT.push([-8.6,tz,8.6,tz,.95,2.4]);}
   {W.fin(.7,0);W.box(0,3.12,z0+.07,6.4,1.36,.1,hex('#0b0812'));
     W.fin(.9,1);for(const [a,b] of [[[-3.2,2.44,z0+.13],[3.2,2.44,z0+.13]],[[-3.2,3.8,z0+.13],[3.2,3.8,z0+.13]],[[-3.2,2.44,z0+.13],[-3.2,3.8,z0+.13]],[[3.2,2.44,z0+.13],[3.2,3.8,z0+.13]]])W.tube(a,b,.028,chrome,0,6);
     W.fin(0,0);neon2(W,'THE WORKSHOP',[0,3.12,z0+.17],[1,0,0],.064,hex('#ffd23f'),4.5);neon2(W,'UNFINISHED GAMES',[0,2.64,z0+.17],[1,0,0],.03,hex('#ff2f9a'),4.2);
     lightAt(0,3.0,z0+1.1,6,[1,.75,.4],.9);}
-  spot([-1.6,TY-.2,-12.2],[-3.4,1.4,-15.2],[.65,.45,1],13,.9,{range:4.5,pool:.45});
-  spot([1.6,TY-.2,-12.2],[3.4,1.4,-14.9],[1,.7,.35],14,.9,{range:4.5,pool:.45});
-  spot([0,TY-.2,-12.2],[0,3.0,-15.9],[1,.8,.45],7,1.0,{light:false});
+  spot([-1.6,TY-.2,-22.6],[-3.4,1.4,-25.2],[.65,.45,1],13,.9,{range:4.5,pool:.45});
+  spot([1.6,TY-.2,-22.6],[3.4,1.4,-24.85],[1,.7,.35],14,.9,{range:4.5,pool:.45});
+  spot([0,TY-.2,-22.6],[0,3.0,-25.9],[1,.8,.45],7,1.0,{light:false});
   spot([6.0,TY-.2,-12.2],[7.9,1.5,-11.6],[1,.78,.5],17,1.0,{range:4.8,pool:.5});lightAt(8.5,2.7,-13.6,3.4,[.4,.62,1],.7);lightAt(8.5,2.7,-9.6,3.4,[.4,.62,1],.6);
 
   /* the gallery's name on the left wall */
@@ -186,7 +187,7 @@ function buildRoom(){
 
   /* ---- a polished mat at the door, a polished floor in front of the games ---- */
   GLOSS.disc=[0,6.55,1.05,3];
-  GLOSS.rects.push([-4.4,ZB+.08,-.4,-6.2,1],[-7,-16,7,-13.1,1]);
+  GLOSS.rects.push([-4.4,ZB+.08,-.4,-6.2,1],[-7,-26,7,-23.1,1]);
   {const [cx,cz,r]=GLOSS.disc,pts=[];for(let i=0;i<64;i++){const a=i/64*TAU;pts.push([cx+Math.cos(a)*(r+.02),.012,cz+Math.sin(a)*(r+.02)]);}
     W.fin(.9,1);polyTube(W,pts,.02,chrome,0,true);W.fin(0,0);
     const p2=pts.map(p=>[cx+(p[0]-cx)*.985,.016,cz+(p[2]-cz)*.985]);polyTube(W,p2,.008,trimC,3.2,true);}

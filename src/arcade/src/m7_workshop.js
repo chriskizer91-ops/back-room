@@ -297,3 +297,81 @@ function MechCockpit(o){
   a.onIdle=()=>{inner.k=.85+.08*Math.sin(W_.t*2.2);};
   return a;
 }
+
+/* ---------- Redline County: the front half of the stock SUV ----------
+   The Stock build from the game: warm grey paint, the chrome twin-bar face, six-spoke wheels on
+   all-season tyres, roof rails with crossbars, mud up the sides from a day out. It's cut off behind
+   the front seats and sits on jack stands on a patch of the game's own tyre-tracked dirt, with hay
+   bales and a low sign out front. Climb into the driver's seat: the windshield is the screen. */
+function texAt(url,cb){const im=new Image();im.onload=()=>cb(texFrom(im,false));im.src=url;}
+function RedlineSUV(o){
+  const a=Machine(Object.assign({useZ:1.55},o)),T=a.T,B=.06;
+  const SC=[0,1.51+B,-.13],ST=.62,SW=1.4,SH=.7875;
+  a.addScreen(o.game.id||'redlinecounty',o.res||[320,180],SC,ST,SW,SH,{gain:2.3,col:'#ff4fa0'});
+  a.cam=()=>({eye:a.W(0,1.36+B,1.05),tgt:a.W(0,1.5+B,-.13),fov:52});
+  /* surfaces with the game's own textures: lit, not glowing */
+  const lit=(pts,url)=>{const m=new MB();m.m=mmul(m.m,T);m.quad(pts[0],pts[1],pts[2],pts[3],[1,1,1],0,QUV);const e={mesh:mesh(m),tex:null,mode:2,emi:1};texAt(ROOT+url,t=>{e.tex=t;TEXMESH.push(e);});};
+  a.build=mb=>{
+    const paint=hex('#6a625b'),clad=hex('#3a3a3d'),blk=hex('#121214'),chrome=CHROME,rubber=hex('#151517'),rim=hex('#b8bcc2'),red=hex('#8a1c1c'),wood=hex('#5a3a22');
+    mb.push();mb.m=mmul(mb.m,T);
+    /* the patch of ground: a low timber-edged plinth */
+    mb.fin(.2,0);mb.box(0,B/2,-.35,3.5,B,4.5,wood);
+    mb.push();mb.tr(0,B,0);
+    /* the body: lower panels, the front fascia and bumper, the hood */
+    mb.fin(.55,0);mb.box(0,.74,-.55,1.84,.72,2.7,paint);
+    mb.fin(.3,0);mb.box(0,.56,-1.97,1.84,.36,.18,clad);mb.box(0,.4,-1.9,1.6,.1,.3,blk);
+    mb.fin(.6,1);mb.box(0,.93,-1.935,1.46,.3,.05,blk);
+    for(const y of [1.0,.87])mb.tube([-.56,y,-1.965],[.56,y,-1.965],.026,chrome,0,8);
+    mb.sphere(0,.935,-1.97,.04,chrome,0,1);
+    mb.fin(0,0);for(const sx of [-1,1]){mb.box(sx*.67,.94,-1.955,.3,.14,.03,hex('#eaf2ff'),3.2);mb.box(sx*.67,.82,-1.955,.3,.05,.03,hex('#ffb040'),2.2);mb.box(sx*.58,.5,-2.07,.14,.08,.02,hex('#fff4d8'),2.6);}
+    mb.fin(.55,0);mb.push();mb.tr(0,1.13,-1.17);mb.rx(-.05);mb.box(0,0,0,1.8,.06,1.58,paint);mb.pop();
+    mb.box(0,1.16,-.38,1.8,.06,.12,paint);
+    /* fender flares, the wheels: all-seasons on factory six-spokes */
+    for(const sx of [-1,1]){mb.fin(.3,0);mb.box(sx*.935,.84,-1.35,.07,.3,1.02,clad);
+      const x=sx*.86,y=.42,z=-1.35;mb.fin(.15,0);mb.push();mb.tr(x,y,z);mb.rz(Math.PI/2);mb.cyl(0,-.15,0,.42,.3,22,rubber);mb.pop();
+      const fx=x+sx*.152;mb.fin(.85,1);mb.push();mb.tr(fx,y,z);mb.rz(Math.PI/2);mb.cyl(0,-.01,0,.26,.02,20,rim);mb.pop();
+      for(let k=0;k<6;k++){mb.push();mb.tr(fx+sx*.006,y,z);mb.rx(k/6*TAU);mb.box(0,.13,0,.02,.2,.05,rim);mb.pop();}
+      mb.push();mb.tr(fx+sx*.012,y,z);mb.rz(Math.PI/2);mb.cyl(0,-.02,0,.06,.04,12,hex('#5a5c62'));mb.pop();}
+    /* the cabin: A-pillars, roof, roof rails and crossbars, B-pillars at the cut, mirrors, a chrome beltline */
+    mb.fin(.55,0);for(const sx of [-1,1]){segBox(mb,[sx*.86,1.16,-.38],[sx*.8,1.86,.12],.07,.07,paint);segBox(mb,[sx*.89,1.1,.8],[sx*.82,1.86,.8],.08,.1,paint);
+      mb.box(sx*1.0,1.22,-.28,.14,.12,.08,blk);mb.fin(.85,1);mb.tube([sx*.925,1.11,-.38],[sx*.925,1.11,.8],.01,chrome,0,6);mb.fin(.55,0);}
+    mb.box(0,1.88,.46,1.68,.06,.72,paint);
+    mb.fin(.5,1);for(const sx of [-1,1])mb.tube([sx*.7,1.96,.14],[sx*.7,1.96,.8],.014,blk,0,6);for(const z of [.3,.68])mb.tube([-.72,1.98,z],[.72,1.98,z],.012,blk,0,6);
+    /* the cut: a clean black panel where the rest of the truck would be */
+    mb.fin(.3,0);mb.box(0,.74,.815,1.84,.72,.03,blk);
+    /* inside: the dash, the wheel, two buckets, the console and shifter */
+    mb.fin(.3,0);mb.box(0,1.0,-.28,1.7,.22,.3,hex('#1c1b1e'));mb.box(0,.5,.15,1.7,.04,1.3,hex('#141416'));
+    {const c=[-.42,1.1,.02],pts=[];for(let i=0;i<24;i++){const t=i/24*TAU;pts.push([Math.cos(t)*.19,Math.sin(t)*.19,0]);}
+      mb.push();mb.tr(...c);mb.rx(-.5);mb.fin(.2,0);polyTube(mb,pts,.022,blk,0,true);for(const t of [0,2.1,4.2])mb.tube([0,0,0],[Math.cos(t+.5)*.19,Math.sin(t+.5)*.19,0],.018,blk);mb.sphere(0,0,0,.05,blk,0,1);mb.pop();
+      mb.tube([-.42,1.05,-.15],[-.42,1.1,.0],.03,blk);}
+    for(const sx of [-1,1]){const x=sx*.42;mb.fin(.25,0);mb.box(x,.66,.42,.52,.14,.5,hex('#2a2828'));mb.push();mb.tr(x,1.0,.7);mb.rx(-.12);mb.box(0,0,0,.52,.66,.1,hex('#2a2828'));mb.box(0,.44,0,.28,.18,.1,hex('#2a2828'));mb.pop();}
+    mb.box(0,.66,.18,.26,.22,.6,hex('#1c1b1e'));mb.fin(.8,1);mb.tube([0,.78,.1],[0,.98,.06],.012,chrome);mb.sphere(0,.99,.06,.03,blk,0,1);
+    /* jack stands under the cut, a cone, hay bales */
+    mb.fin(.5,1);for(const sx of [-1,1]){segBox(mb,[sx*.6,0,.7],[sx*.6,.38,.7],.08,.08,red);mb.box(sx*.6,.02,.7,.28,.04,.28,red);}
+    mb.fin(.3,0);mb.cyl(1.35,0,1.25,.14,.42,12,hex('#ff6a1e'),0,.02);mb.box(1.35,.01,1.25,.32,.02,.32,hex('#ff6a1e'));
+    mb.pop();mb.pop();
+    /* the game's textures: tyre-tracked dirt on the ground, mud up the truck, hay */
+    const y=B+.002;lit([[-1.74,y,1.9],[1.74,y,1.9],[1.74,y,-2.6],[-1.74,y,-2.6]],'art/rc/tracks.webp');
+    for(const sx of [-1,1]){const x=sx*.922,yb=.38+B,yt=.82+B;lit(sx<0?[[x,yb,.8],[x,yb,-1.9],[x,yt,-1.9],[x,yt,.8]]:[[x,yb,-1.9],[x,yb,.8],[x,yt,.8],[x,yt,-1.9]],'art/rc/mud.webp');}
+    const bale=(x,yy,z,ry)=>{const BT=chain(T,mT(x,yy,z),mRY(ry)),hw=.45,hh=.2,hd=.25,P=(a,b,c)=>[a*hw,b*hh+hh,c*hd];
+      const faces=[[P(-1,-1,1),P(1,-1,1),P(1,1,1),P(-1,1,1)],[P(1,-1,-1),P(-1,-1,-1),P(-1,1,-1),P(1,1,-1)],[P(-1,1,1),P(1,1,1),P(1,1,-1),P(-1,1,-1)],[P(1,-1,1),P(1,-1,-1),P(1,1,-1),P(1,1,1)],[P(-1,-1,-1),P(-1,-1,1),P(-1,1,1),P(-1,1,-1)]];
+      for(const f of faces){const m=new MB();m.m=mmul(m.m,BT);m.quad(f[0],f[1],f[2],f[3],[1,1,1],0,QUV);const e={mesh:mesh(m),tex:null,mode:2,emi:1};texAt(ROOT+'art/rc/hay.webp',t=>{e.tex=t;TEXMESH.push(e);});}};
+    bale(-1.25,B,-2.0,.3);bale(-1.3,B,-1.4,-.2);bale(-1.28,B+.4,-1.7,.1);bale(1.3,B,.9,.5);
+    /* tinted glass on the outside of the windshield, so from the front you see glass, not the back of the screen */
+    {const tint=canvasTex(4,64,(g,w,h)=>{const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,'#1a1c26');gr.addColorStop(.5,'#08090d');gr.addColorStop(1,'#14161e');g.fillStyle=gr;g.fillRect(0,0,w,h);});
+      const GT=chain(T,mT(SC[0],SC[1],SC[2]),mRX(ST));texQuad(GT,[[-SW/2-.03,-SH/2-.03,-.014],[SW/2+.03,-SH/2-.03,-.014],[SW/2+.03,SH/2+.03,-.014],[-SW/2-.03,SH/2+.03,-.014]],tint,.6);}
+    /* a low timber sign in front of the bumper, the game's name in its pink neon */
+    {mb.push();mb.m=mmul(mb.m,T);mb.fin(.2,0);mb.box(0,.5+B,-2.42,2.5,.46,.06,hex('#3a2616'));for(const sx of [-1.15,1.15])mb.box(sx,.36+B,-2.42,.08,.72,.08,hex('#5a3a22'));
+      neon2(mb,'REDLINE COUNTY',[0,.56+B,-2.46],[-1,0,0],.026,hex('#ff3fa0'),4.4);neon2(mb,'ROAD NOT FOUND + SALT AND SAND',[0,.37+B,-2.46],[-1,0,0],.011,hex('#ffb24a'),3.6);mb.pop();}
+    const p0=a.W(-1.1,0,-2.7),p1=a.W(1.1,0,.9);block(Math.min(p0[0],p1[0]),Math.max(p0[0],p1[0]),Math.min(p0[2],p1[2]),Math.max(p0[2],p1[2]));
+    const q0=a.W(-1.8,0,-2.55),q1=a.W(1.3,0,-2.3);block(Math.min(q0[0],q1[0]),Math.max(q0[0],q1[0]),Math.min(q0[2],q1[2]),Math.max(q0[2],q1[2]));
+    /* the headlights throw two beams onto the barn wall */
+    for(const sx of [-1,1]){const hp=a.W(sx*.67,.94+B,-1.99),hq=a.W(sx*.95,0,-4.6);beamAt(hp,[hq[0]-hp[0],hq[1]-hp[1],hq[2]-hp[2]],13,2.8,[.85,.9,1],.45);}
+  };
+  const hl=a.W(0,.5,-3.2);lightAt(hl[0],.5,hl[2],2.6,[.85,.9,1],.8);
+  const dp=a.W(-.3,1.25,.2),dash=lightAt(dp[0],1.25,dp[2],1.6,[1,.6,.3],.55);
+  const sp=a.W(0,2.9,-.6);lightAt(sp[0],2.9,sp[2],5,[1,.88,.7],.75);
+  const np=a.W(0,.9,-2.9);lightAt(np[0],.9,np[2],2.2,[1,.3,.6],.5);
+  a.onIdle=()=>{dash.k=.5+.05*Math.sin(W_.t*2.1);};
+  return a;
+}

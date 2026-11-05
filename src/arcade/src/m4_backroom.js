@@ -18,6 +18,11 @@ MechCockpit({name:'Ironhowl',sub:'Climb into the Howler · 3D or Retro 2D',x:8.0
     {title:'Ironhowl 3D',sub:'The mech arena in real 3D · in progress',src:ARC+'v2/games/ironhowl3d.html',deluxe:true},
     {title:'Ironhowl',sub:'Retro 2D · the original, on the LED matrix',src:ARC+'games/ironhowl.html'}]}});
 HalfBuilt({x:ROOM.x0+.75,z:-14.9,ry:RX});
+/* Redline County: the front half of the stock SUV, on a patch of the game's dirt. Climb in; the windshield is the screen */
+RedlineSUV({name:'Redline County',sub:'Climb into the SUV · pick a game',x:0,z:-11.4,ry:1.97,res:[320,180],
+  game:{id:'redlinecounty',title:'Redline County',choices:[
+    {title:'Road Not Found + Traffic',sub:'Wide Open 2, the full game · heavy: best on a laptop',src:ROOT+'games/roadnotfound.html',bridge:false},
+    {title:'Salt & Sand',sub:'The Studio 2 SUV on the salt flats · runs well on phones',src:ROOT+'games/saltsand.html',bridge:false}]}});
 Workbench({x:ROOM.x0+.42,z:-12.2,ry:RX});
 
 /* THE GALLERY: art from the games, made with AI */

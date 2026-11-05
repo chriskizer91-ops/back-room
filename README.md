@@ -12,14 +12,14 @@ It runs on V2's engine: the same renderer, the same walking, the same cabinets. 
 | Back wall, under BACK ROOM · GAMES IN PROGRESS | **What the Map Forgot**, a giant handheld on a pedestal, built after the game's own handheld. On the left, a doorway leads through to the Workshop. |
 | Left wall, the GALLERY | Three framed pictures from Envoi. |
 | Right wall | Two from What the Map Forgot. The Jester from Moon Faire hangs on the X Room's wall. |
-| Through the doorway: **the Workshop**, under THE WORKSHOP · UNFINISHED GAMES | Unfinished games, each on a cabinet built to look like its game. **Envoi on the Longest Night** is a moonlit gothic shrine: a pointed arch with gilt trim, a stained-glass rose window, a crescent moon, candles on the steps, motes of magic drifting round it, and the key art on its front. **Moon Faire** is a booth at a night faire: a striped tent with a valance of chasing bulbs, a velvet curtain, a gilt playbill screen, a full moon on the peak, and the performers on cut-out boards either side. In the corner is the next one, a cabinet still being built (NEXT UP), with a work light, sawhorses and paint. A workbench sits under a pegboard of tools. |
+| Through the doorway: **the Workshop**, under THE WORKSHOP · UNFINISHED GAMES | Unfinished games, each on a cabinet built to look like its game. **Envoi on the Longest Night** is a moonlit gothic shrine: a pointed arch with gilt trim, a stained-glass rose window, a crescent moon, candles on the steps, motes of magic drifting round it, and the key art on its front. **Moon Faire** is a booth at a night faire: a striped tent with a valance of chasing bulbs, a velvet curtain, a gilt playbill screen, a full moon on the peak, and the performers on cut-out boards either side. On the right wall, **the Howler**, Ironhowl's mech cockpit: a mech kneeling with its chest hatch open. Climbing in offers Ironhowl 3D or the Retro 2D original, both played from the main arcade's site, so it's always the newest build. In the middle, **Redline County**: the front half of the game's stock SUV (warm grey, chrome twin-bar grille, six-spoke wheels, mud up the sides) on a patch of the game's own tyre-tracked dirt. Climb into the driver's seat and the windshield is the screen, with a choice of *Road Not Found + Traffic* (heavy: best on a laptop) or *Salt & Sand* (runs well on phones). In the back corner is the next one, a cabinet still being built (NEXT UP), with a work light, sawhorses and paint. A workbench sits under a pegboard of tools. |
 | Back right corner | **The X Room**, a closet through its own door. It holds five lit panels: What this is, Collaboration + augmentation, The part that's mine, The future of media, and Open by design. |
 
 Every picture and panel works like a machine. Walk up and press VIEW or READ (E or Enter). The picture or the words open full size, and ← Arcade (or Esc) brings you back.
 
 ## The games
 
-`games/envoi.html`, `games/moonfaire.html` and `games/mapforgot.html` are the builds as Christopher shared them, unchanged. None of them speaks the cabinet contract yet. The cabinet is told so (`bridge:false`), and it lifts its loading screen as soon as the game's page has loaded. They don't award tickets. Leaving works as for any game: hold Esc, or the ← Arcade pill.
+`games/envoi.html`, `games/moonfaire.html`, `games/mapforgot.html`, `games/roadnotfound.html` and `games/saltsand.html` are the builds as Christopher shared them, unchanged. The Howler's two games aren't copied here: it opens them from the main arcade's site (`../HYPERDOT-ARCADE/`). None of them speaks the cabinet contract yet. The cabinet is told so (`bridge:false`), and it lifts its loading screen as soon as the game's page has loaded. They don't award tickets. Leaving works as for any game: hold Esc, or the ← Arcade pill.
 
 To update a game, replace its file in `games/`.
 
@@ -44,7 +44,7 @@ That writes `index.html` from V2's `shell.html` (copied into `src/arcade/` uncha
 | `m1_host.js` | V2's game host, plus reading cards (panels, pictures, the door) and the chooser for a cabinet with more than one game |
 | `m2_cabinets.js`, `m3_tables.js` | V2's cabinets and tables, unchanged |
 | `m6_parts.js` | the back room's own machines: the giant handheld, the panels, the frames, the sealed door |
-| `m7_workshop.js` | the Workshop's cabinets: Envoi's shrine, Moon Faire's booth, the half-built NEXT UP, the workbench |
+| `m7_workshop.js` | the Workshop's cabinets: Envoi's shrine, Moon Faire's booth, the Howler, the Redline County SUV, the half-built NEXT UP, the workbench |
 | `m4_backroom.js` | the floor plan |
 
 `build.py` also makes a few small changes to the shell, and checks that each one matches exactly once:

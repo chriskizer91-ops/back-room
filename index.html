@@ -841,6 +841,7 @@ function buildRoom(){
   spot([-1.6,TY-.2,-12.2],[-3.4,1.4,-15.2],[.65,.45,1],13,.9,{range:4.5,pool:.45});
   spot([1.6,TY-.2,-12.2],[3.4,1.4,-14.9],[1,.7,.35],14,.9,{range:4.5,pool:.45});
   spot([0,TY-.2,-12.2],[0,3.0,-15.9],[1,.8,.45],7,1.0,{light:false});
+  spot([6.0,TY-.2,-12.2],[7.9,1.5,-11.6],[1,.78,.5],17,1.0,{range:4.8,pool:.5});lightAt(8.5,2.7,-13.6,3.4,[.4,.62,1],.7);lightAt(8.5,2.7,-9.6,3.4,[.4,.62,1],.6);
 
   /* the gallery's name on the left wall */
   W.fin(.6,0);W.box(x0+.03,3.16,.4,.06,.42,3.3,hex('#0a0810'));W.fin(0,0);
@@ -2986,6 +2987,82 @@ function Workbench(o){
   const lp=xf(T,.5,1.1,.2);lightAt(lp[0],lp[1],lp[2],2.6,[1,.85,.6],.7);
 }
 
+/* ---------- Ironhowl: the Howler, kneeling, its chest hatch open ----------
+   A mech knelt down so its pilot can climb in: one knee on the ground, its cannon arm resting on the floor,
+   missile pods on its shoulder. The chest hatch is swung up; inside are the seat, the sticks, and the
+   cockpit's screens, the main one straight ahead. Its face looks out over the room. */
+function segBox(mb,a,b,w,d,col,e=0){const v=[b[0]-a[0],b[1]-a[1],b[2]-a[2]],L=Math.hypot(...v),hz=Math.hypot(v[0],v[2]);
+  mb.push();mb.tr((a[0]+b[0])/2,(a[1]+b[1])/2,(a[2]+b[2])/2);mb.ry(Math.atan2(v[0],v[2]||1e-6));mb.rx(Math.acos(clamp(v[1]/L,-1,1)));mb.box(0,0,0,w,L,d,col,e);mb.pop();}
+function MechCockpit(o){
+  const a=Machine(Object.assign({useZ:1.65},o)),T=a.T;
+  const SY=1.36,SW=.96,SH=.54,SZ=-.6;
+  a.addScreen(o.game.id||'ironhowl',o.res||[384,216],[0,SY,SZ],0,SW,SH,{gain:2.4,col:'#ff9a3a'});
+  const beacon=[],embers=[];
+  a.build=mb=>{
+    mb.push();mb.m=mmul(mb.m,T);
+    const arm=hex('#565a66'),arm2=hex('#3a3d46'),joint=hex('#1e2026'),orange=hex('#ff7a2e'),amber=hex('#ffb040'),steel=hex('#8a8e9a'),seat=hex('#1c1c22');
+    /* the cockpit pod: floor, back, sides and roof, a sill and a frame round the open front */
+    mb.fin(.55,1);mb.box(0,.5,-.1,1.5,.1,1.3,arm2);mb.box(0,1.25,-.72,1.5,1.5,.1,arm);
+    for(const sx of [-1,1]){mb.box(sx*.72,1.25,-.1,.1,1.5,1.3,arm);
+      /* angled armour on the flanks */
+      mb.push();mb.tr(sx*.8,1.3,-.05);mb.rz(sx*.18);mb.box(0,0,0,.06,1.1,1.1,arm2);mb.pop();}
+    mb.box(0,1.98,-.1,1.5,.1,1.3,arm);
+    mb.box(0,.69,.5,1.5,.36,.14,arm2);for(const sx of [-1,1])mb.box(sx*.68,1.32,.5,.14,1.3,.14,arm);mb.box(0,1.9,.5,1.5,.18,.16,arm);
+    /* the hatch, swung up on its hinge, lit underneath */
+    mb.push();mb.tr(0,1.99,.58);mb.rx(-1.12);mb.fin(.6,1);mb.box(0,0,.44,1.32,.08,.88,arm);mb.box(0,.05,.44,1.0,.03,.6,arm2);
+      mb.fin(0,0);mb.box(0,-.045,.44,1.0,.01,.04,amber,2.6);mb.box(0,-.045,.8,1.2,.01,.03,orange,2.2);mb.pop();
+    /* inside: the seat facing the screen, two sticks, side consoles */
+    mb.fin(.3,0);mb.box(0,.62,-.08,.52,.12,.5,seat);mb.push();mb.tr(0,.98,.2);mb.rx(.12);mb.box(0,0,0,.52,.66,.1,seat);mb.box(0,.42,0,.3,.18,.1,seat);mb.pop();
+    mb.fin(0,0);mb.box(0,.69,-.08,.4,.005,.4,orange,.6);
+    for(const sx of [-1,1]){const x=sx*.38;mb.fin(.6,1);mb.box(x,.72,-.3,.18,.36,.3,arm2);mb.cyl(x,.9,-.32,.035,.04,10,joint);
+      mb.tube([x,.92,-.32],[x,1.08,-.36],.016,steel);mb.fin(.3,0);mb.box(x,1.12,-.37,.06,.12,.06,seat);mb.fin(0,0);mb.sphere(x,1.19,-.36,.016,hex('#ff3030'),3,0);
+      for(let k=0;k<3;k++)mb.box(x+sx*.04-.04+k*.04,.905,-.22,.025,.01,.025,[hex('#ffd23f'),hex('#6dff7a'),hex('#2fe6ff')][k],2.4);}
+    /* the mech's face over the hatch: a sensor head with a glowing visor and an antenna */
+    mb.fin(.55,1);mb.box(0,2.16,.12,.56,.26,.44,arm);mb.box(0,2.16,.35,.6,.18,.06,arm2);
+    mb.fin(0,0);mb.box(0,2.17,.385,.46,.05,.01,amber,3.6);
+    mb.fin(.8,1);mb.tube([.2,2.29,0],[.26,2.62,-.06],.008,steel);mb.fin(0,0);beacon.push([.26,2.64,-.06]);
+    /* shoulders: a big plate each side, a missile pod on the right */
+    for(const sx of [-1,1]){mb.fin(.55,1);mb.box(sx*.98,1.95,-.15,.46,.32,.74,arm);mb.box(sx*.98,2.12,-.15,.4,.06,.66,arm2);mb.fin(0,0);mb.box(sx*.98,1.95,.225,.42,.04,.01,orange,1.6);}
+    mb.fin(.5,1);mb.box(1.02,2.32,-.2,.4,.3,.5,arm2);
+    for(let i=0;i<3;i++)for(let j=0;j<2;j++){zCyl(mb,.9+i*.12,2.27+j*.11,.04,.06,.04,joint,0,10);mb.fin(0,0);zCyl(mb,.9+i*.12,2.27+j*.11,.055,.062,.022,orange,2.4,10);mb.fin(.5,1);}
+    /* arms: the left one lets its cannon rest on the floor, the right one rests on the raised knee */
+    mb.fin(.55,1);segBox(mb,[-1.0,1.8,-.15],[-1.12,1.2,.12],.24,.26,arm2);mb.sphere(-1.12,1.2,.12,.13,joint,0,1);
+    segBox(mb,[-1.12,1.2,.12],[-1.18,.34,.86],.28,.28,arm);mb.fin(.7,1);zCyl(mb,-1.18,.3,.86,1.2,.07,steel,0,12);mb.fin(0,0);zCyl(mb,-1.18,.3,1.19,1.205,.06,orange,1.6,12);
+    mb.fin(.55,1);segBox(mb,[1.0,1.8,-.15],[1.14,1.28,.18],.24,.26,arm2);mb.sphere(1.14,1.28,.18,.13,joint,0,1);segBox(mb,[1.14,1.28,.18],[1.02,1.12,.62],.24,.24,arm);mb.box(1.02,1.1,.7,.22,.2,.2,arm2);
+    /* legs: the left knee down on the floor, the right knee up with its foot planted */
+    segBox(mb,[-.92,.9,-.35],[-.96,.26,.5],.34,.38,arm);mb.sphere(-.96,.26,.52,.17,joint,0,1);segBox(mb,[-.96,.24,.5],[-.96,.2,-.6],.3,.28,arm2);mb.box(-.96,.12,-.74,.34,.24,.32,arm);
+    segBox(mb,[.92,.9,-.35],[.98,1.0,.55],.34,.38,arm);mb.sphere(.98,1.0,.57,.17,joint,0,1);segBox(mb,[.98,1.0,.57],[.98,.22,.7],.3,.3,arm2);mb.box(.98,.11,.82,.46,.22,.62,arm);
+    mb.fin(0,0);mb.box(.98,.06,1.135,.42,.05,.01,orange,1.2);
+    /* exhausts on the back, glowing */
+    for(const sx of [-.35,.35]){mb.fin(.6,1);zCyl(mb,sx,1.7,-.95,-.77,.1,joint,0,12);mb.fin(0,0);zCyl(mb,sx,1.7,-.955,-.94,.075,orange,3,12);embers.push([sx,1.7,-1.0]);}
+    mb.pop();
+    /* hazard stripes on the sill and the toe, the name stencilled on the flank */
+    const haz=canvasTex(256,32,(g,w,h)=>{g.fillStyle='#111';g.fillRect(0,0,w,h);g.fillStyle='#ff7a2e';for(let x=-h;x<w;x+=28){g.beginPath();g.moveTo(x,h);g.lineTo(x+14,h);g.lineTo(x+14+h,0);g.lineTo(x+h,0);g.closePath();g.fill();}});
+    texQuad(T,[[-.74,.54,.572],[.74,.54,.572],[.74,.66,.572],[-.74,.66,.572]],haz,.9);
+    const sten=canvasTex(512,128,(g,w,h)=>{g.fillStyle='#3a3d46';g.fillRect(0,0,w,h);g.fillStyle='#e8e4dc';g.font='bold 64px Impact,"Arial Black",sans-serif';g.textAlign='center';g.fillText('IRONHOWL',w/2,72);
+      g.font='bold 26px monospace';g.fillStyle='#ff7a2e';g.fillText('HOWLER  ·  IH-01',w/2,110);});
+    texQuad(T,[[-.775,1.1,.45],[-.775,1.1,-.65],[-.775,1.38,-.65],[-.775,1.38,.45]],sten,1.0);
+    texQuad(T,[[.775,1.1,-.65],[.775,1.1,.45],[.775,1.38,.45],[.775,1.38,-.65]],sten,1.0);
+    /* the cockpit's side screens: radar on one, the mech's status on the other */
+    const radar=canvasTex(160,160,(g,w,h)=>{g.fillStyle='#050302';g.fillRect(0,0,w,h);g.strokeStyle='#ff9a3a';g.lineWidth=2;for(const r of [20,42,64]){g.beginPath();g.arc(80,80,r,0,TAU);g.stroke();}
+      g.beginPath();g.moveTo(80,80);g.lineTo(140,40);g.stroke();g.fillStyle='#ff3030';for(const [x,y] of [[110,60],[50,110],[120,120]]){g.fillRect(x-3,y-3,6,6);}g.fillStyle='#ffd23f';g.fillRect(77,77,6,6);});
+    const stat=canvasTex(160,160,(g,w,h)=>{g.fillStyle='#050302';g.fillRect(0,0,w,h);g.fillStyle='#ff9a3a';g.font='bold 14px monospace';
+      ['HULL','HEAT','AMMO','CORE'].forEach((s,i)=>{g.fillText(s,10,28+i*34);g.fillRect(64,16+i*34,[80,46,64,90][i],12);});});
+    const sideScr=(sx,tex)=>{const ST=chain(T,mT(sx*.6,1.2,-.38),mRY(sx*-.95));texQuad(ST,[[-.17,-.14,0],[.17,-.14,0],[.17,.2,0],[-.17,.2,0]],tex,1.5);};
+    sideScr(-1,radar);sideScr(1,stat);
+    const p0=a.W(-1.4,0,-1.05),p1=a.W(1.4,0,1.25);block(Math.min(p0[0],p1[0]),Math.max(p0[0],p1[0]),Math.min(p0[2],p1[2]),Math.max(p0[2],p1[2]));
+    /* a red beacon blinking on the antenna, embers drifting off the exhausts */
+    const BW=beacon.map(p=>a.W(...p));Glints(1,'#ff3030',.02,()=>BW[0],(i,t)=>(t%1.2)<.18?4:.2);
+    const EW=embers.map(p=>a.W(...p));
+    Glints(10,'#ff8a3a',.009,(i,t)=>{const k=(t*.35+i/10)%1,b=EW[i%2];return [b[0]+Math.sin(i*3.1+t)*.05,b[1]+k*.9,b[2]+Math.cos(i*2.3)*.05];},(i,t)=>{const k=(t*.35+i/10)%1;return 2.6*(1-k);});
+  };
+  const ip=a.W(0,1.5,0),inner=lightAt(ip[0],1.5,ip[2],2.4,[1,.55,.2],.9);
+  const vp=a.W(0,2.1,1.0);lightAt(vp[0],2.1,vp[2],2.6,[1,.7,.3],.6);
+  const lp=a.W(0,.4,1.4);lightAt(lp[0],.5,lp[2],2.6,[1,.4,.15],.55);
+  a.onIdle=()=>{inner.k=.85+.08*Math.sin(W_.t*2.2);};
+  return a;
+}
+
 /* ================= the back room's floor plan ================= */
 const RX=Math.PI/2;
 const G_=(id,title,o={})=>Object.assign({id,title,src:ROOT+'games/'+id+'.html'},o);
@@ -2999,7 +3076,13 @@ EnvoiShrine({name:'Envoi on the Longest Night',sub:'A story in chapters · in pr
   game:G_('envoi','ENVOI ON THE LONGEST NIGHT',{bridge:false,deluxe:true})});
 FaireBooth({name:'Moon Faire',sub:'The performers · in progress',x:3.4,z:-14.85,ry:0,res:[320,180],
   game:G_('moonfaire','MOON FAIRE',{bridge:false,deluxe:true})});
-HalfBuilt({x:ROOM.x1-.7,z:-12.4,ry:-RX});
+/* Ironhowl: the Howler, kneeling with its hatch open. It plays the arcade's own Ironhowl, both versions, from the arcade's site */
+const ARC='../HYPERDOT-ARCADE/';
+MechCockpit({name:'Ironhowl',sub:'Climb into the Howler · 3D or Retro 2D',x:8.0,z:-11.6,ry:-RX,res:[384,216],
+  game:{id:'ironhowl',title:'Ironhowl',deluxe:true,choices:[
+    {title:'Ironhowl 3D',sub:'The mech arena in real 3D · in progress',src:ARC+'v2/games/ironhowl3d.html',deluxe:true},
+    {title:'Ironhowl',sub:'Retro 2D · the original, on the LED matrix',src:ARC+'games/ironhowl.html'}]}});
+HalfBuilt({x:ROOM.x0+.75,z:-14.9,ry:RX});
 Workbench({x:ROOM.x0+.42,z:-12.2,ry:RX});
 
 /* THE GALLERY: art from the games, made with AI */

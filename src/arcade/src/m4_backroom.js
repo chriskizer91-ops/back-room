@@ -11,7 +11,13 @@ EnvoiShrine({name:'Envoi on the Longest Night',sub:'A story in chapters · in pr
   game:G_('envoi','ENVOI ON THE LONGEST NIGHT',{bridge:false,deluxe:true})});
 FaireBooth({name:'Moon Faire',sub:'The performers · in progress',x:3.4,z:-14.85,ry:0,res:[320,180],
   game:G_('moonfaire','MOON FAIRE',{bridge:false,deluxe:true})});
-HalfBuilt({x:ROOM.x1-.7,z:-12.4,ry:-RX});
+/* Ironhowl: the Howler, kneeling with its hatch open. It plays the arcade's own Ironhowl, both versions, from the arcade's site */
+const ARC='../HYPERDOT-ARCADE/';
+MechCockpit({name:'Ironhowl',sub:'Climb into the Howler · 3D or Retro 2D',x:8.0,z:-11.6,ry:-RX,res:[384,216],
+  game:{id:'ironhowl',title:'Ironhowl',deluxe:true,choices:[
+    {title:'Ironhowl 3D',sub:'The mech arena in real 3D · in progress',src:ARC+'v2/games/ironhowl3d.html',deluxe:true},
+    {title:'Ironhowl',sub:'Retro 2D · the original, on the LED matrix',src:ARC+'games/ironhowl.html'}]}});
+HalfBuilt({x:ROOM.x0+.75,z:-14.9,ry:RX});
 Workbench({x:ROOM.x0+.42,z:-12.2,ry:RX});
 
 /* THE GALLERY: art from the games, made with AI */

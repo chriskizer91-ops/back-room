@@ -22,7 +22,7 @@ def put(old,new):
     assert s.count(old)==1,('expected once',old[:70],s.count(old))
     s=s.replace(old,new)
 put('/*@@ROOM@@*/',rd('m0_backroom.js'))
-put('/*@@MACHINES@@*/','\n'.join(rd(n) for n in ['m1_host.js','m2_cabinets.js','m3_tables.js','m6_parts.js','m7_workshop.js','m4_backroom.js']))
+put('/*@@MACHINES@@*/','\n'.join(rd(n) for n in ['m1_host.js','m2_cabinets.js','m3_tables.js','m6_parts.js','m7_workshop.js','m8_upgrades.js','m4_backroom.js']))
 put("/*@@INTRO@@*/'original'","'original'")
 put("/*@@ROOT@@*/'../'","''")
 put("/*@@DEMO@@*/false",'false')

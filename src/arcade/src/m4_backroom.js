@@ -16,11 +16,26 @@ const ARC='../HYPERDOT-ARCADE/';
 MechCockpit({name:'Ironhowl',sub:'Climb into the Howler · 3D or Retro 2D',x:8.0,z:-11.6,ry:-RX,res:[384,216],
   game:{id:'ironhowl',title:'Ironhowl',deluxe:true,choices:[
     {title:'Ironhowl 3D',sub:'The mech arena in real 3D · in progress',src:ARC+'v2/games/ironhowl3d.html',deluxe:true},
+    {title:'Ironhowl 3',sub:'Four arenas and Endless mode · in progress, on its way to Ironhowl 4',src:ARC+'v2/games/ironhowl3/index.html',deluxe:true},
     {title:'Ironhowl',sub:'Retro 2D · the original, on the LED matrix',src:ARC+'games/ironhowl.html'}]}});
 HalfBuilt({x:ROOM.x0+.75,z:-24.9,ry:RX});
-/* room for what's next: two machines under their sheets down the right wall */
-Covered({name:'Coming soon',x:ROOM.x1-.7,z:-16.8,ry:-RX,seed:4.2});Covered({name:'Coming soon',x:ROOM.x1-.7,z:-20.4,ry:-RX,seed:5.7});
-{neon2(WORLD,'COMING SOON',[ROOM.x1-.1,2.55,-18.6],[0,0,1],.03,hex('#b47aff'),3.8);lightAt(ROOM.x1-1.3,2.3,-18.6,4,[.6,.4,1],.6);}
+/* THE UPGRADES: each game being rebuilt in V2, on a cabinet built like it. They play from the main arcade's site,
+   so they're always the newest build, and each offers the new version and the Retro 2D original. */
+const UP=(id,title,list)=>({id,title,deluxe:true,choices:list.map(([t,s,src,retro])=>({title:t,sub:s,src:ARC+src,deluxe:!retro}))});
+BowlLane({name:'Strike Night',sub:'Bowl a frame · 3D or Retro 2D',x:-7.8,z:-14.0,ry:0,
+  game:UP('bowl','Strike Night',[['Strike Night 3D','The night lane in real 3D · finished','v2/games/bowl3d.html'],['Strike Night','Retro 2D · the original','games/bowl.html',1]])});
+LanceFighter({name:'Voidlance',sub:'Climb into the cockpit · 3D or Retro 2D',x:-5.9,z:-21.0,ry:RX,
+  game:UP('voidlance','Voidlance',[['Voidlance 3D','Six missions, one lance, one leviathan · in 3D','v2/games/voidlance3d.html'],['Voidlance','Retro 2D · the original, on the LED matrix','games/voidlance.html',1]])});
+VersusCab({name:'Voltfist',sub:'Step up · 3D or Retro 2D',x:-1.6,z:-18.6,ry:0,
+  game:UP('voltfist','Voltfist',[['Voltfist 3D','Five fighters in real 3D · in progress','v2/games/voltfist3d.html'],['Voltfist','Retro 2D · the original, on the LED matrix','games/voltfist.html',1]])});
+HoverBike({name:'Prisma',sub:'Get on the bike · 3D or Retro 2D',x:3.2,z:-18.2,ry:0,
+  game:UP('prisma','Prisma',[['Prisma 3D','The neon city at night · in progress','v2/games/prisma3d.html'],['Prisma','Retro 2D · the original, on the LED matrix','games/prisma.html',1]])});
+ForgeMolten({name:'Molten',sub:'Work the forge · Molten II or Retro 2D',x:7.95,z:-16.2,ry:-RX,
+  game:UP('molten','Molten',[['Molten II','The forge in 3D · in progress','v2/games/molten3d.html'],['Molten','Retro 2D · the original, on the LED matrix','games/molten.html',1]])});
+ClawDeluxe({name:'Plush Panic',sub:'Try the claw · 3D or Retro 2D',x:8.05,z:-19.6,ry:-RX,
+  game:UP('claw','Plush Panic',[['Plush Panic 3D','Three machines of soft plushes · in progress','v2/games/claw3d.html'],['Plush Panic','Retro 2D · the original','games/claw.html',1]])});
+Lamppost({name:'Lantern',sub:'Light the lamps · pick a version',x:7.6,z:-22.9,ry:-RX,
+  game:UP('lantern','Lantern',[['Lantern: The Long Night','The newest one · in progress','v2/games/lanternr.html'],['Lantern 3D','The first 3D version','v2/games/lantern3d.html'],['Lantern','Retro 2D · the original, amber plasma','games/lantern.html',1]])});
 /* Redline County: the front half of the stock SUV, on a patch of the game's dirt. Climb in; the windshield is the screen */
 RedlineSUV({name:'Redline County',sub:'Climb into the SUV · pick a game',x:0,z:-11.4,ry:1.97,res:[320,180],
   game:{id:'redlinecounty',title:'Redline County',choices:[

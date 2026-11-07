@@ -36,6 +36,10 @@ ClawDeluxe({name:'Plush Panic',sub:'Try the claw · 3D or Retro 2D',x:8.05,z:-19
   game:UP('claw','Plush Panic',[['Plush Panic 3D','Three machines of soft plushes · in progress','v2/games/claw3d.html'],['Plush Panic','Retro 2D · the original','games/claw.html',1]])});
 Lamppost({name:'Lantern',sub:'Light the lamps · pick a version',x:7.6,z:-22.9,ry:-RX,
   game:UP('lantern','Lantern',[['Lantern: The Long Night','The newest one · in progress','v2/games/lanternr.html'],['Lantern 3D','The first 3D version','v2/games/lantern3d.html'],['Lantern','Retro 2D · the original, amber plasma','games/lantern.html',1]])});
+/* Air Hockey 3D: a full-size table that plays itself until you step up. The original air hockey is built into
+   the main floor (V1 and V2), so this one plays the 3D rebuild only, from the main arcade's site. */
+AirHockeyTable({name:'Air Hockey 3D',sub:'Step up to the table · in 3D',x:-4.3,z:-16.0,ry:0,
+  game:{id:'airhockey3d',title:'AIR HOCKEY 3D',src:ARC+'v2/games/airhockey3d.html',deluxe:true}});
 /* Redline County: the front half of the stock SUV, on a patch of the game's dirt. Climb in; the windshield is the screen */
 RedlineSUV({name:'Redline County',sub:'Climb into the SUV · pick a game',x:0,z:-11.4,ry:1.97,res:[320,180],
   game:{id:'redlinecounty',title:'Redline County',choices:[

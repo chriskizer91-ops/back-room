@@ -3153,6 +3153,7 @@ function RedlineSUV(o){
    - LanceFighter: Voidlance, a starfighter's cockpit on a docking cradle, its lance nose pointed at the wall
    - HoverBike: Prisma, a hover-bike floating over a glowing pad, light trails behind, rain falling
    - Lamppost: Lantern, an iron street lamp on cobbles, moths round the flame, the screen on its notice board
+   - AirHockeyTable: Air Hockey 3D, a full-size table with a hanging scoreboard, playing itself between visitors
    ===================================================================================== */
 function litQuad(T,pts,src,emi,mode){const m=new MB();m.m=mmul(m.m,T);m.quad(pts[0],pts[1],pts[2],pts[3],[1,1,1],0,QUV);const e={mesh:mesh(m),tex:null,mode:mode??2,emi:emi??1};
   if(typeof src==='string')texAt(ROOT+src,t=>{e.tex=t;TEXMESH.push(e);});else{e.tex=src;TEXMESH.push(e);}return e;}
@@ -3419,6 +3420,98 @@ function Lamppost(o){
   return a;
 }
 
+/* ---------- Air Hockey 3D: a full-size air hockey table, built like the game's own ----------
+   A 2 x 1 m white deck with the game's markings, an aluminium rail over a black rubber foot, a goal slot
+   in each end rail with a lit chute behind it, an LED strip along the rail in each player's colour, a gloss
+   black cabinet with neon side art and an underglow, and a two-faced LED scoreboard hanging over it.
+   While nobody plays, the table plays itself: a puck glides and two mallets trade hits. */
+function AirHockeyTable(o){
+  const a=Machine(Object.assign({useZ:1.75,minH:52},o)),T=a.T,D=.8,HW=.5,HL=1.0,RC=.11,GW=.15,RP=.0405,RM=.05,BY=D+1.32;
+  a.addScreen(o.game.id,o.res||[112,32],[0,BY,.081],0,.96,.274,{gain:2.4,col:'#2fd8ff',title:'AIR HOCKEY'});
+  a.addScreen(o.game.id,o.res||[112,32],[0,BY,-.081],0,.96,.274,{gain:2.4,col:'#ff2f8a',title:'AIR HOCKEY',ry:Math.PI});
+  a.cam=()=>({eye:a.W(0,D+1.2,HL+.95),tgt:a.W(0,D,-.12),fov:52});
+  /* a rounded rectangle as points (x,z), and the half-rings that make the rails */
+  const rr=(hw,hl,r,n=6)=>{const p=[],arc=(cx,cz,a0)=>{for(let i=0;i<=n;i++){const t=a0+Math.PI/2*i/n;p.push([cx+Math.cos(t)*r,cz+Math.sin(t)*r]);}};
+    arc(hw-r,hl-r,0);arc(-hw+r,hl-r,Math.PI/2);arc(-hw+r,-hl+r,Math.PI);arc(hw-r,-hl+r,1.5*Math.PI);return p;};
+  const half=(sx,gw,ihw,ihl,ir,ohw,ohl,or)=>{const side=(hw,hl,r)=>{const p=[[gw,-hl]];for(let i=0;i<=6;i++){const t=-Math.PI/2+Math.PI/2*i/6;p.push([hw-r+Math.cos(t)*r,-hl+r+Math.sin(t)*r]);}
+      for(let i=0;i<=6;i++){const t=Math.PI/2*i/6;p.push([hw-r+Math.cos(t)*r,hl-r+Math.sin(t)*r]);}p.push([gw,hl]);return p;};
+    const pts=side(ihw,ihl,ir).concat(side(ohw,ohl,or).reverse()).map(([x,z])=>[x*sx,z]);return sx<0?pts.reverse():pts;};
+  const deck=canvasTex(500,1000,(g,w,h)=>{g.fillStyle='#e4ebf3';g.fillRect(0,0,w,h);
+    g.fillStyle='rgba(120,140,170,.35)';for(let y=6;y<h;y+=12.5)for(let x=6;x<w;x+=12.5)g.fillRect(x,y,1.6,1.6);
+    const red='#e8203c',blue='#2a64ff',ln=(c,lw,f)=>{g.strokeStyle=c;g.lineWidth=lw;g.beginPath();f();g.stroke();};
+    ln(red,5,()=>{g.moveTo(0,h/2);g.lineTo(w,h/2);});ln(blue,4,()=>g.arc(w/2,h/2,75,0,TAU));ln(blue,2,()=>g.arc(w/2,h/2,64,0,TAU));
+    for(const y of [0,h])ln(red,4,()=>g.arc(w/2,y,105,y?Math.PI:0,y?TAU:Math.PI));
+    for(const y of [h*.25,h*.75])ln(blue,3,()=>{g.moveTo(0,y);g.lineTo(w,y);});
+    g.fillStyle=red;for(const y of [h*.25,h*.75])for(const x of [w*.25,w*.75]){g.beginPath();g.arc(x,y,7,0,TAU);g.fill();}
+    g.font='italic 700 32px "Chakra Petch",sans-serif';g.textAlign='center';g.fillStyle='rgba(42,100,255,.9)';g.fillText('HYPERDOT',w/2,h/2-6);
+    g.font='italic 700 19px "Chakra Petch",sans-serif';g.fillStyle='rgba(232,32,60,.9)';g.fillText('AIR HOCKEY',w/2,h/2+20);});
+  const art=(end,pl)=>canvasTex(512,128,(g,w,h)=>{const gr=g.createLinearGradient(0,0,0,h);gr.addColorStop(0,'#120a24');gr.addColorStop(1,'#05040a');g.fillStyle=gr;g.fillRect(0,0,w,h);
+    if(!end){const st=(x,c)=>{g.fillStyle=c;g.beginPath();g.moveTo(x,h);g.lineTo(x+6,h);g.lineTo(x+66,0);g.lineTo(x+60,0);g.closePath();g.fill();};
+      for(let i=0;i<5;i++){st(20+i*13,i%2?'#ff2f8a':'#2fd8ff');st(w-150+i*13,i%2?'#2fd8ff':'#ff2f8a');}
+      g.save();g.translate(w/2,h/2+4);g.transform(1,0,-.22,1,0,0);g.font='700 56px "Chakra Petch",sans-serif';g.textAlign='center';g.textBaseline='middle';
+      g.shadowColor='#ff2f8a';g.shadowBlur=14;g.fillStyle='#ffe9f6';g.fillText('AIR HOCKEY',0,0);g.restore();
+      g.font='600 13px "Chakra Petch",sans-serif';g.fillStyle='#7fe9ff';g.textAlign='center';g.fillText('H Y P E R D O T   A R C A D E',w/2,h-10);}
+    else{const c=pl?'#ff2f8a':'#2fd8ff';g.fillStyle=c;g.fillRect(0,9,w,5);g.fillRect(0,h-14,w,5);g.font='700 27px "Chakra Petch",sans-serif';g.textAlign='center';g.fillStyle='#fff';
+      g.shadowColor=c;g.shadowBlur=9;g.fillText(pl?'PLAYER 2':'PLAYER 1',w*.26,h/2+9);g.shadowBlur=0;g.fillStyle='#000';g.fillRect(w*.47,h*.36,w*.2,h*.36);
+      g.fillStyle=c;g.beginPath();g.arc(w*.84,h/2,20,0,TAU);g.fill();}});
+  a.build=mb=>{
+    mb.push();mb.m=mmul(mb.m,T);
+    const blk=hex('#0c0a14'),alu=hex('#c9ced8'),rub=hex('#141218'),cy=hex('#2fd8ff'),pk=hex('#ff2f8a'),vi=hex('#8a5aff');
+    const ohw=HW+.07,ohl=HL+.095,orr=RC+.063;
+    /* the plinth with its underglow, the cabinet, the chrome trim */
+    mb.fin(.3,.2);mb.extrudeY(rr(ohw-.08,ohl-.11,.1),0,.245,hex('#08070c'));
+    mb.fin(0,0);polyTube(mb,rr(ohw-.075,ohl-.105,.1).map(([x,z])=>[x,.232,z]),.006,vi,3.2,true);
+    mb.fin(.65,0);mb.extrudeY(rr(ohw+.012,ohl+.012,orr+.01),.245,D-.004,blk);
+    mb.fin(.9,1);polyTube(mb,rr(ohw+.016,ohl+.016,orr+.012).map(([x,z])=>[x,D-.02,z]),.006,CHROME,0,true);
+    /* the rails: an aluminium band all the way round over a rubber foot that stops at the goal posts */
+    mb.fin(.85,1);for(const sx of [-1,1])mb.extrudeY(half(sx,0,HW,HL,RC,ohw,ohl,orr),D+.024,D+.052,alu);
+    mb.fin(.15,0);for(const sx of [-1,1])mb.extrudeY(half(sx,GW,HW,HL,RC,ohw,ohl,orr),D-.002,D+.025,rub);
+    /* the goal chutes: dark behind each slot, a light strip at the back in that end's colour */
+    for(const sz of [-1,1]){mb.fin(0,0);mb.box(0,D-.03,sz*(HL+.048),GW*2,.06,.09,hex('#030205'));mb.box(0,D+.008,sz*(HL+.088),GW*2-.02,.012,.004,sz>0?cy:pk,3);}
+    /* the LED strip along the top of the rail: blue at your end, pink at the far end */
+    mb.fin(0,0);const led=rr(HW+.011,HL+.011,RC+.011,8);
+    for(let i=0;i<led.length;i++){const p=led[i],q=led[(i+1)%led.length],near=(p[1]+q[1])>0;mb.tube([p[0],D+.054,p[1]],[q[0],D+.054,q[1]],.0035,near?cy:pk,3.4);}
+    /* the scoreboard over the table, on two cables */
+    mb.fin(.6,0);mb.box(0,BY,0,1.04,.34,.16,blk);mb.fin(.9,1);mb.box(0,BY+.18,0,1.08,.025,.17,CHROME);mb.box(0,BY-.18,0,1.08,.025,.17,CHROME);
+    for(const sx of [-.42,.42])mb.tube([sx,BY+.19,0],[sx,ROOM.h,0],.004,CHROME,0,5);
+    mb.fin(0,0);mb.tube([-.55,BY-.2,.086],[.55,BY-.2,.086],.004,cy,3);mb.tube([-.55,BY-.2,-.086],[.55,BY-.2,-.086],.004,pk,3);
+    mb.pop();
+    litQuad(T,[[-HW,D+.001,HL],[HW,D+.001,HL],[HW,D+.001,-HL],[-HW,D+.001,-HL]],deck,1,2);
+    const sa=art(false),ex=ohw+.0135,el=ohl-orr-.02;
+    litQuad(T,[[ex,.3,el],[ex,.3,-el],[ex,.74,-el],[ex,.74,el]],sa,.9,3);litQuad(T,[[-ex,.3,-el],[-ex,.3,el],[-ex,.74,el],[-ex,.74,-el]],sa,.9,3);
+    const ez=ohl+.0135,ew=ohw-orr+.03;
+    litQuad(T,[[-ew,.34,ez],[ew,.34,ez],[ew,.7,ez],[-ew,.7,ez]],art(true,0),.9,3);litQuad(T,[[ew,.34,-ez],[-ew,.34,-ez],[-ew,.7,-ez],[ew,.7,-ez]],art(true,1),.9,3);
+    footprint(a,-ohw-.03,-ohl-.03,ohw+.03,ohl+.03);
+  };
+  /* the pieces, and a rally that plays itself */
+  let pk3=null,ml3=null,ml4=null;
+  {let b=new MB();b.fin(.6,0);b.cyl(0,0,0,RP,.011,20,hex('#e3172a'),.15);b.fin(.2,0);b.cyl(0,.011,0,RP*.7,.0006,20,hex('#f4f4f8'),.1);pk3=b;
+   const mal=c=>{const m=new MB();m.fin(.75,0);m.cyl(0,0,0,RM,.016,24,c,.15);m.cyl(0,.016,0,RM,.02,24,c,.15,.017);m.cyl(0,.034,0,.016,.024,14,c,.15);m.sphere(0,.072,0,.022,c,.2,2,.85);m.fin(0,0);m.cyl(0,.012,0,RM+.001,.003,24,c,2.4,RM+.001,false);return m;};
+   ml3=mal(hex('#2fd8ff'));ml4=mal(hex('#ff2f8a'));}
+  let M=null;const S={x:0,z:0,vx:.6,vz:1.7,m:[{x:0,z:HL-.2},{x:0,z:-HL+.2}],t:0,last:-1,wait:0};
+  a.onDraw=()=>{
+    if(!M)M={p:mesh(pk3),a:mesh(ml3),b:mesh(ml4)};
+    const now=W_.t,dt=S.last<0?0:Math.min(.05,Math.max(0,now-S.last));S.last=now;
+    if(dt>0&&W_.mode!=='game'){
+      if(S.wait>0){S.wait-=dt;if(S.wait<=0){S.x=0;S.z=0;const an=(Math.random()-.5)*1.2,sp=1.6;S.vx=Math.sin(an)*sp;S.vz=(Math.random()<.5?1:-1)*Math.cos(an)*sp;}}
+      else{S.x+=S.vx*dt;S.z+=S.vz*dt;
+        if(Math.abs(S.x)>HW-RP){S.x=Math.sign(S.x)*(HW-RP);S.vx=-S.vx*.92;}
+        for(let i=0;i<2;i++){const m=S.m[i],sd=i?-1:1,home=sd*(HL-.2),toward=S.vz*sd>0&&S.z*sd>-.2;
+          const tx=toward?S.x:S.x*.3,tz=toward&&Math.abs(S.z-home)<.5?S.z+sd*(RP+RM+.01):home;
+          const dx=tx-m.x,dz=tz-m.z,d=Math.hypot(dx,dz),st=(toward?1.9:.9)*dt;if(d>st){m.x+=dx/d*st;m.z+=dz/d*st;}else{m.x=tx;m.z=tz;}
+          const qx=S.x-m.x,qz=S.z-m.z,q=Math.hypot(qx,qz);
+          if(q<RP+RM&&S.vz*sd>0){const nx=qx/q,nz=qz/q;S.x=m.x+nx*(RP+RM);S.z=m.z+nz*(RP+RM);const sp=1.5+Math.random()*1.1,an=(Math.random()-.5)*.9+nx*.6;S.vx=Math.sin(an)*sp;S.vz=-sd*Math.cos(an)*sp;}}
+        if(Math.abs(S.z)>HL-RP){if(Math.abs(S.x)<GW-RP){S.wait=1.2;S.z=Math.sign(S.z)*(HL+.05);}else{S.z=Math.sign(S.z)*(HL-RP);S.vz=-S.vz*.9;}}
+        const sp=Math.hypot(S.vx,S.vz);if(sp>0){const k=Math.max(0,sp-.04*dt)/sp;S.vx*=k;S.vz*=k;}}
+    }
+    if(S.wait<=0)drawLit(M.p,chain(T,mT(S.x,D+.002,S.z)));
+    drawLit(M.a,chain(T,mT(S.m[0].x,D+.001,S.m[0].z)));drawLit(M.b,chain(T,mT(S.m[1].x,D+.001,S.m[1].z)));
+  };
+  const lp=a.W(0,2.5,0);lightAt(lp[0],2.5,lp[2],3.2,[1,.95,.88],.85);
+  const l1=a.W(0,.4,HL+.4);lightAt(l1[0],.4,l1[2],1.6,[.18,.8,1],.5);const l2=a.W(0,.4,-HL-.4);lightAt(l2[0],.4,l2[2],1.6,[1,.18,.55],.5);
+  return a;
+}
+
 /* ================= the back room's floor plan ================= */
 const RX=Math.PI/2;
 const G_=(id,title,o={})=>Object.assign({id,title,src:ROOT+'games/'+id+'.html'},o);
@@ -3457,6 +3550,10 @@ ClawDeluxe({name:'Plush Panic',sub:'Try the claw · 3D or Retro 2D',x:8.05,z:-19
   game:UP('claw','Plush Panic',[['Plush Panic 3D','Three machines of soft plushes · in progress','v2/games/claw3d.html'],['Plush Panic','Retro 2D · the original','games/claw.html',1]])});
 Lamppost({name:'Lantern',sub:'Light the lamps · pick a version',x:7.6,z:-22.9,ry:-RX,
   game:UP('lantern','Lantern',[['Lantern: The Long Night','The newest one · in progress','v2/games/lanternr.html'],['Lantern 3D','The first 3D version','v2/games/lantern3d.html'],['Lantern','Retro 2D · the original, amber plasma','games/lantern.html',1]])});
+/* Air Hockey 3D: a full-size table that plays itself until you step up. The original air hockey is built into
+   the main floor (V1 and V2), so this one plays the 3D rebuild only, from the main arcade's site. */
+AirHockeyTable({name:'Air Hockey 3D',sub:'Step up to the table · in 3D',x:-4.3,z:-16.0,ry:0,
+  game:{id:'airhockey3d',title:'AIR HOCKEY 3D',src:ARC+'v2/games/airhockey3d.html',deluxe:true}});
 /* Redline County: the front half of the stock SUV, on a patch of the game's dirt. Climb in; the windshield is the screen */
 RedlineSUV({name:'Redline County',sub:'Climb into the SUV · pick a game',x:0,z:-11.4,ry:1.97,res:[320,180],
   game:{id:'redlinecounty',title:'Redline County',choices:[

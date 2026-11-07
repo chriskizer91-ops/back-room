@@ -34,6 +34,8 @@ ForgeMolten({name:'Molten',sub:'Work the forge · Molten II or Retro 2D',x:7.95,
   game:UP('molten','Molten',[['Molten II','The forge in 3D · in progress','v2/games/molten3d.html'],['Molten','Retro 2D · the original, on the LED matrix','games/molten.html',1]])});
 ClawDeluxe({name:'Plush Panic',sub:'Try the claw · 3D or Retro 2D',x:8.05,z:-19.6,ry:-RX,
   game:UP('claw','Plush Panic',[['Plush Panic 3D','Three machines of soft plushes · in progress','v2/games/claw3d.html'],['Plush Panic','Retro 2D · the original','games/claw.html',1]])});
+/* Air Hockey 3D: a full-size table under a hanging scoreboard */
+HockeyTable({name:'Air Hockey 3D',sub:'One or two players · first to 7',x:-3.9,z:-15.6,ry:0,game:G_('airhockey','AIR HOCKEY 3D',{src:ROOT+'games/airhockey3d.html',deluxe:true})});
 Lamppost({name:'Lantern',sub:'Light the lamps · pick a version',x:7.6,z:-22.9,ry:-RX,
   game:UP('lantern','Lantern',[['Lantern: The Long Night','The newest one · in progress','v2/games/lanternr.html'],['Lantern 3D','The first 3D version','v2/games/lantern3d.html'],['Lantern','Retro 2D · the original, amber plasma','games/lantern.html',1]])});
 /* Redline County: the front half of the stock SUV, on a patch of the game's dirt. Climb in; the windshield is the screen */
